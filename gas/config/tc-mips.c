@@ -868,6 +868,12 @@ static int mips_fix_24k;
 /* ...likewise -mfix-cn63xxp1 */
 static bfd_boolean mips_fix_cn63xxp1;
 
+/* ...likewise -mfix-loongson3-llsc
+ * Default is add sync before ll/lld
+ * So make the default value as one.
+ */
+static bfd_boolean mips_fix_loongson3_llsc = TRUE;
+
 /* We don't relax branches by default, since this causes us to expand
    `la .l2 - .l1' if there's a branch between .l1 and .l2, because we
    fail to compute the offset before expanding the macro to the most
@@ -1352,6 +1358,8 @@ enum options
     OPTION_MNO_7000_HILO_FIX,
     OPTION_FIX_24K,
     OPTION_NO_FIX_24K,
+    OPTION_FIX_LOONGSON3_LLSC,
+    OPTION_NO_FIX_LOONGSON3_LLSC,
     OPTION_FIX_LOONGSON2F_JUMP,
     OPTION_NO_FIX_LOONGSON2F_JUMP,
     OPTION_FIX_LOONGSON2F_NOP,
@@ -1465,6 +1473,8 @@ struct option md_longopts[] =
   {"mno-fix-vr4130", no_argument, NULL, OPTION_NO_FIX_VR4130},
   {"mfix-24k",    no_argument, NULL, OPTION_FIX_24K},
   {"mno-fix-24k", no_argument, NULL, OPTION_NO_FIX_24K},
+  {"mfix-loongson3-llsc",   no_argument, NULL, OPTION_FIX_LOONGSON3_LLSC},
+  {"mno-fix-loongson3-llsc", no_argument, NULL, OPTION_NO_FIX_LOONGSON3_LLSC},
   {"mfix-cn63xxp1", no_argument, NULL, OPTION_FIX_CN63XXP1},
   {"mno-fix-cn63xxp1", no_argument, NULL, OPTION_NO_FIX_CN63XXP1},
 
@@ -3601,9 +3611,40 @@ md_assemble (char *str)
 	    str, insn.insn_opcode));
     }
 
-  if (insn_error.msg)
+  if (insn_error.msg) {
     report_insn_error (str);
-  else if (insn.insn_mo->pinfo == INSN_MACRO)
+    goto out;
+  }
+
+  if (mips_fix_loongson3_llsc == FALSE)
+    {} /*Nothing to Do!*/
+  else
+    {
+    static expressionS bak_imm_expr;
+    static expressionS bak_offset_expr;
+    static bfd_reloc_code_real_type bak_offset_reloc[3] ;
+
+    if ((strcmp (insn.insn_mo->name, "ll") == 0)
+        ||(strcmp (insn.insn_mo->name, "lld") == 0)) {
+           bak_imm_expr = imm_expr;
+           bak_offset_expr = offset_expr;
+
+           bak_offset_reloc[0] = offset_reloc[0];
+           bak_offset_reloc[1] = offset_reloc[1];
+           bak_offset_reloc[2] = offset_reloc[2];
+
+           md_assemble("sync");
+
+           imm_expr = bak_imm_expr;
+           offset_expr = bak_offset_expr;
+
+           offset_reloc[0] = bak_offset_reloc[0];
+           offset_reloc[1] = bak_offset_reloc[1];
+           offset_reloc[2] = bak_offset_reloc[2];
+    }
+  }
+
+  if (insn.insn_mo->pinfo == INSN_MACRO)
     {
       macro_start ();
       if (mips_opts.mips16)
@@ -3620,6 +3661,7 @@ md_assemble (char *str)
 	append_insn (&insn, NULL, unused_reloc, FALSE);
     }
 
+out:
   mips_assembling_insn = FALSE;
 }
 
@@ -13509,6 +13551,14 @@ md_parse_option (int c, char *arg)
 
     case OPTION_NO_FIX_24K:
       mips_fix_24k = 0;
+      break;
+
+    case OPTION_FIX_LOONGSON3_LLSC:
+      mips_fix_loongson3_llsc = TRUE;
+      break;
+
+    case OPTION_NO_FIX_LOONGSON3_LLSC:
+      mips_fix_loongson3_llsc = FALSE;
       break;
 
     case OPTION_FIX_LOONGSON2F_JUMP:
