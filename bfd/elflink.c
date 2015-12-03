@@ -271,8 +271,12 @@ _bfd_elf_link_create_dynamic_sections (bfd *abfd, struct bfd_link_info *info)
 
   if (info->emit_gnu_hash)
     {
-      s = bfd_make_section_anyway_with_flags (abfd, ".gnu.hash",
-					      flags | SEC_READONLY);
+      if (bed->record_hash_symbol == NULL)
+	s = bfd_make_section_anyway_with_flags (abfd, ".gnu.hash",
+						flags | SEC_READONLY);
+      else
+	s = bfd_make_section_anyway_with_flags (abfd, ".gnu.xhash",
+						flags | SEC_READONLY);
       if (s == NULL
 	  || ! bfd_set_section_alignment (abfd, s, bed->s->log_file_align))
 	return FALSE;
@@ -5213,6 +5217,7 @@ struct collect_gnu_hash_codes
   unsigned long int *counts;
   bfd_vma *bitmask;
   bfd_byte *contents;
+  bfd_vma xlat;
   long int min_dynindx;
   unsigned long int bucketcount;
   unsigned long int symindx;
@@ -5292,7 +5297,15 @@ elf_renumber_gnu_hash_syms (struct elf_link_hash_entry *h, void *data)
   if (! (*s->bed->elf_hash_symbol) (h))
     {
       if (h->dynindx >= s->min_dynindx)
-	h->dynindx = s->local_indx++;
+	{
+	  if (s->bed->record_hash_symbol != NULL)
+	    {
+	      (*s->bed->record_hash_symbol) (h, 0);
+	      ++s->local_indx;
+	    }
+	  else
+	    h->dynindx = s->local_indx++;
+	}
       return TRUE;
     }
 
@@ -5309,7 +5322,14 @@ elf_renumber_gnu_hash_syms (struct elf_link_hash_entry *h, void *data)
   bfd_put_32 (s->output_bfd, val,
 	      s->contents + (s->indx[bucket] - s->symindx) * 4);
   --s->counts[bucket];
-  h->dynindx = s->indx[bucket]++;
+  if (s->bed->record_hash_symbol != NULL)
+    {
+      bfd_vma xlat_loc = s->xlat + (s->indx[bucket]++ - s->symindx) * 4;
+      BFD_ASSERT (xlat_loc != 0);
+      (*s->bed->record_hash_symbol) (h, xlat_loc);
+    }
+  else
+    h->dynindx = s->indx[bucket]++;
   return TRUE;
 }
 
@@ -5931,7 +5951,9 @@ bfd_elf_size_dynamic_sections (bfd *output_bfd,
 	  if ((info->emit_hash
 	       && !_bfd_elf_add_dynamic_entry (info, DT_HASH, 0))
 	      || (info->emit_gnu_hash
-		  && !_bfd_elf_add_dynamic_entry (info, DT_GNU_HASH, 0))
+		  && (bed->record_hash_symbol == NULL
+		      ? !_bfd_elf_add_dynamic_entry (info, DT_GNU_HASH, 0)
+		      : !_bfd_elf_add_dynamic_entry (info, DT_GNU_XHASH, 0)))
 	      || !_bfd_elf_add_dynamic_entry (info, DT_STRTAB, 0)
 	      || !_bfd_elf_add_dynamic_entry (info, DT_SYMTAB, 0)
 	      || !_bfd_elf_add_dynamic_entry (info, DT_STRSZ, strsize)
@@ -6549,19 +6571,30 @@ bfd_elf_size_dynsym_hash_dynstr (bfd *output_bfd, struct bfd_link_info *info)
 	      return FALSE;
 	    }
 
-	  s = bfd_get_linker_section (dynobj, ".gnu.hash");
+	  if (bed->record_hash_symbol == NULL)
+	    s = bfd_get_linker_section (dynobj, ".gnu.hash");
+	  else
+	    s = bfd_get_linker_section (dynobj, ".gnu.xhash");
 	  BFD_ASSERT (s != NULL);
 
 	  if (cinfo.nsyms == 0)
 	    {
-	      /* Empty .gnu.hash section is special.  */
+	      /* Empty .gnu.hash or .gnu.xhash section is special.  */
 	      BFD_ASSERT (cinfo.min_dynindx == -1);
 	      free (cinfo.hashcodes);
 	      s->size = 5 * 4 + bed->s->arch_size / 8;
+	      if (bed->record_hash_symbol != NULL)
+		s->size += 4;
 	      contents = (unsigned char *) bfd_zalloc (output_bfd, s->size);
 	      if (contents == NULL)
 		return FALSE;
 	      s->contents = contents;
+	      if (bed->record_hash_symbol != NULL)
+		{
+		  /* Chain and xlat symbol count is zero.  */
+		  bfd_put_32 (output_bfd, 0, contents);
+		  contents += 4;
+		}
 	      /* 1 empty bucket.  */
 	      bfd_put_32 (output_bfd, 1, contents);
 	      /* SYMIDX above the special symbol 0.  */
@@ -6634,6 +6667,8 @@ bfd_elf_size_dynsym_hash_dynstr (bfd *output_bfd, struct bfd_link_info *info)
 
 	      s->size = (4 + bucketcount + cinfo.nsyms) * 4;
 	      s->size += cinfo.maskbits / 8;
+	      if (bed->record_hash_symbol != NULL)
+		s->size += (1 + cinfo.nsyms) * 4;
 	      contents = (unsigned char *) bfd_zalloc (output_bfd, s->size);
 	      if (contents == NULL)
 		{
@@ -6643,6 +6678,11 @@ bfd_elf_size_dynsym_hash_dynstr (bfd *output_bfd, struct bfd_link_info *info)
 		}
 
 	      s->contents = contents;
+	      if (bed->record_hash_symbol != NULL)
+		{
+		  bfd_put_32 (output_bfd, cinfo.nsyms, contents);
+		  contents += 4;
+		}
 	      bfd_put_32 (output_bfd, bucketcount, contents);
 	      bfd_put_32 (output_bfd, cinfo.symindx, contents + 4);
 	      bfd_put_32 (output_bfd, maskwords, contents + 8);
@@ -6659,12 +6699,15 @@ bfd_elf_size_dynsym_hash_dynstr (bfd *output_bfd, struct bfd_link_info *info)
 		}
 
 	      cinfo.contents = contents;
-
+	      if (bed->record_hash_symbol != NULL)
+		cinfo.xlat = contents + cinfo.nsyms * 4 - s->contents;
 	      /* Renumber dynamic symbols, populate .gnu.hash section.  */
 	      elf_link_hash_traverse (elf_hash_table (info),
 				      elf_renumber_gnu_hash_syms, &cinfo);
 
 	      contents = s->contents + 16;
+	      if (bed->record_hash_symbol != NULL)
+		contents += 4;
 	      for (i = 0; i < maskwords; ++i)
 		{
 		  bfd_put (bed->s->arch_size, output_bfd, cinfo.bitmask[i],
@@ -11314,6 +11357,9 @@ bfd_elf_final_link (bfd *abfd, struct bfd_link_info *info)
 	      goto get_vma;
 	    case DT_GNU_HASH:
 	      name = ".gnu.hash";
+	      goto get_vma;
+	    case DT_GNU_XHASH:
+	      name = ".gnu.xhash";
 	      goto get_vma;
 	    case DT_STRTAB:
 	      name = ".dynstr";
