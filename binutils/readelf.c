@@ -181,7 +181,6 @@ static unsigned int dynamic_syminfo_nent;
 static char program_interpreter[PATH_MAX];
 static bfd_vma dynamic_info[DT_ENCODING];
 static bfd_vma dynamic_info_DT_GNU_HASH;
-static bfd_vma dynamic_info_DT_GNU_XHASH;
 static bfd_vma version_info[16];
 static Elf_Internal_Ehdr elf_header;
 static Elf_Internal_Shdr * section_headers;
@@ -1806,7 +1805,6 @@ get_dynamic_type (unsigned long type)
     case DT_GNU_LIBLIST: return "GNU_LIBLIST";
     case DT_GNU_LIBLISTSZ: return "GNU_LIBLISTSZ";
     case DT_GNU_HASH:	return "GNU_HASH";
-    case DT_GNU_XHASH:	return "GNU_XHASH";
 
     default:
       if ((type >= DT_LOPROC) && (type <= DT_HIPROC))
@@ -3304,7 +3302,6 @@ get_section_type_name (unsigned int sh_type)
     case SHT_FINI_ARRAY:	return "FINI_ARRAY";
     case SHT_PREINIT_ARRAY:	return "PREINIT_ARRAY";
     case SHT_GNU_HASH:		return "GNU_HASH";
-    case SHT_GNU_XHASH:		return "GNU_XHASH";
     case SHT_GROUP:		return "GROUP";
     case SHT_SYMTAB_SHNDX:	return "SYMTAB SECTION INDICIES";
     case SHT_GNU_verdef:	return "VERDEF";
@@ -8458,16 +8455,6 @@ process_dynamic_section (FILE * file)
 	    }
 	  break;
 
-	case DT_GNU_XHASH:
-	  dynamic_info_DT_GNU_XHASH = entry->d_un.d_val;
-	  dynamic_info_DT_GNU_HASH = dynamic_info_DT_GNU_XHASH + 4;
-	  if (do_dynamic)
-	    {
-	      print_vma (entry->d_un.d_val, PREFIX_HEX);
-	      putchar ('\n');
-	    }
-	  break;
-
 	default:
 	  if ((entry->d_tag >= DT_VERSYM) && (entry->d_tag <= DT_VERNEEDNUM))
 	    version_info[DT_VERSIONTAGIDX (entry->d_tag)] =
@@ -9394,7 +9381,6 @@ process_symbol_table (FILE * file)
   bfd_vma ngnubuckets = 0;
   bfd_vma * gnubuckets = NULL;
   bfd_vma * gnuchains = NULL;
-  bfd_vma * gnuxlat = NULL;
   bfd_vma gnusymidx = 0;
 
   if (!do_syms && !do_dyn_syms && !do_histogram)
@@ -9525,7 +9511,7 @@ process_symbol_table (FILE * file)
       if (fseek (file,
 		 (archive_file_offset
 		  + offset_from_vma (file, buckets_vma
-				     + 4 * (ngnubuckets + maxchain), 4)),
+					   + 4 * (ngnubuckets + maxchain), 4)),
 		 SEEK_SET))
 	{
 	  error (_("Unable to seek to start of dynamic information\n"));
@@ -9547,30 +9533,6 @@ process_symbol_table (FILE * file)
 	}
       while ((byte_get (nb, 4) & 1) == 0);
 
-      if (dynamic_info_DT_GNU_XHASH)
-	{
-	  if (fseek (file,
-		     (archive_file_offset
-		      + offset_from_vma (file, dynamic_info_DT_GNU_XHASH, 4)),
-		     SEEK_SET))
-	    {
-	      error (_("Unable to seek to start of dynamic information\n"));
-	      goto no_gnu_hash;
-	    }
-
-	  if (fread (nb, 4, 1, file) != 1)
-	    {
-	      error (_("Failed to determine last chain length\n"));
-	      goto no_gnu_hash;
-	    }
-
-	  if (maxchain != byte_get (nb, 4))
-	    {
-	      error (_("Failed to determine last chain length\n"));
-	      goto no_gnu_hash;
-	    }
-	}
-
       if (fseek (file,
 		 (archive_file_offset
 		  + offset_from_vma (file, buckets_vma + 4 * ngnubuckets, 4)),
@@ -9582,45 +9544,7 @@ process_symbol_table (FILE * file)
 
       gnuchains = get_dynamic_data (file, maxchain, 4);
 
-      if (gnuchains == NULL)
-	goto no_gnu_hash;
-
-      if (dynamic_info_DT_GNU_XHASH)
-	{
-	  if (fseek (file,
-		     (archive_file_offset
-		      + offset_from_vma (file, dynamic_info_DT_GNU_XHASH, 4)),
-		     SEEK_SET))
-	    {
-	      error (_("Unable to seek to start of dynamic information\n"));
-	      goto no_gnu_hash;
-	    }
-
-	  if (fread (nb, 4, 1, file) != 1)
-	    {
-	      error (_("Failed to read in number of buckets\n"));
-	      goto no_gnu_hash;
-	    }
-	  if (fseek (file,
-		     (archive_file_offset
-		      + offset_from_vma (file, buckets_vma
-					       + 4 * (ngnubuckets
-						      + maxchain), 4)),
-		     SEEK_SET))
-	    {
-	      error (_("Unable to seek to start of dynamic information\n"));
-	      goto no_gnu_hash;
-	    }
-
-	  gnuxlat = get_dynamic_data (file, maxchain, 4);
-	}
-
     no_gnu_hash:
-      if (dynamic_info_DT_GNU_XHASH && gnuxlat == NULL)
-	{
-	  free (gnuchains);
-	  gnuchains = NULL;
-	}
       if (gnuchains == NULL)
 	{
 	  free (gnubuckets);
@@ -9660,8 +9584,7 @@ process_symbol_table (FILE * file)
 
       if (dynamic_info_DT_GNU_HASH)
 	{
-	  printf (_("\nSymbol table of `%s' for image:\n"),
-		  !dynamic_info_DT_GNU_XHASH ? ".gnu.hash" : ".gnu.xhash");
+	  printf (_("\nSymbol table of `.gnu.hash' for image:\n"));
 	  if (is_32bit_elf)
 	    printf (_("  Num Buc:    Value  Size   Type   Bind Vis      Ndx Name\n"));
 	  else
@@ -9675,10 +9598,7 @@ process_symbol_table (FILE * file)
 
 		do
 		  {
-		    if (!dynamic_info_DT_GNU_XHASH)
-		      print_dynamic_symbol (si, hn);
-		    else
-		      print_dynamic_symbol (gnuxlat[off], hn);
+		    print_dynamic_symbol (si, hn);
 		    si++;
 		  }
 		while ((gnuchains[off++] & 1) == 0);
@@ -10012,8 +9932,7 @@ process_symbol_table (FILE * file)
 	  return 0;
 	}
 
-      printf (_("\nHistogram for `%s' bucket list length (total of %lu buckets):\n"),
-	      !dynamic_info_DT_GNU_XHASH ? ".gnu.hash" : ".gnu.xhash",
+      printf (_("\nHistogram for `.gnu.hash' bucket list length (total of %lu buckets):\n"),
 	      (unsigned long) ngnubuckets);
       printf (_(" Length  Number     %% of total  Coverage\n"));
 
@@ -10059,8 +9978,6 @@ process_symbol_table (FILE * file)
       free (lengths);
       free (gnubuckets);
       free (gnuchains);
-      free (gnuxlat);
-
     }
 
   return 1;
@@ -13997,7 +13914,6 @@ process_object (char * file_name, FILE * file)
   for (i = ARRAY_SIZE (dynamic_info); i--;)
     dynamic_info[i] = 0;
   dynamic_info_DT_GNU_HASH = 0;
-  dynamic_info_DT_GNU_XHASH = 0;
 
   /* Process the file.  */
   if (show_name)
