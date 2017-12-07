@@ -1133,7 +1133,7 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"lca",			"t,A(b)",	0,    (int) M_LCA_AB,	INSN_MACRO,		0,		I1,		0,	0 },
 /* The macro has to be first to handle o32 correctly.  */
 {"ld",			"t,A(b)",	0,    (int) M_LD_AB,	INSN_MACRO,		0,		I1,		0,	0 },
-{"ld",			"t,o(b)",	0xdc000000, 0xfc000000, WR_1|RD_3,		0,		I3,		0,	0 },
+{"ld",			"t,o(b)",	0xdc000000, 0xfc000000, WR_1|RD_3|LDD,		0,		I3,		0,	0 },
 {"ldaddw",		"t,b",		0x70000010, 0xfc00ffff,	MOD_1|RD_2|SM,		0,		XLR,		0,	0 },
 {"ldaddwu",		"t,b",		0x70000011, 0xfc00ffff,	MOD_1|RD_2|SM,		0,		XLR,		0,	0 },
 {"ldaddd",		"t,b",		0x70000012, 0xfc00ffff,	MOD_1|RD_2|SM,		0,		XLR,		0,	0 },
