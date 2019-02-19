@@ -77,6 +77,7 @@ decode_mips_operand (const char *p)
 	case 'a': SINT (8, 6);
 	case 'b': SINT (8, 3);
 	case 'c': INT_ADJ (9, 6, 255, 4, FALSE); /* (-256 .. 255) << 4 */
+	case 'd': BIT (0, 31, 0); /* get 0 */
 	case 'f': INT_ADJ (15, 6, 32767, 3, TRUE);
 	case 'g': SINT (5, 6);
 	case 'i': JALX (26, 0, 2);
@@ -266,6 +267,9 @@ decode_mips_operand (const char *p)
 #define IVIRT	ASE_VIRT
 #define IVIRT64	ASE_VIRT64
 
+/* Loongson AMO support.  */
+#define LAMO	ASE_LOONGSON_AMO
+
 #define G1      (T3             \
                  |EE            \
                  )
@@ -426,6 +430,44 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"gslqc1",		"+Z,T,+c(b)",	0xc8008020, 0xfc008020,	WR_1|WR_2|RD_4|LDD,	0,		IL3A,		0,	0 },
 {"gssqc1",		"+Z,T,+c(b)",	0xe8008020, 0xfc008020,	RD_1|RD_2|RD_4|SM,	0,		IL3A,		0,	0 },
 
+/* Loongson AMO */
+{"amswap_sync.w",	"d,t,+d(s)",	0x70000039, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amswap_sync.d",	"d,t,+d(s)",	0x70000079, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amadd_sync.w",	"d,t,+d(s)",	0x700000b9, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amadd_sync.d",	"d,t,+d(s)",	0x700000f9, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amand_sync.w",	"d,t,+d(s)",	0x70000139, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amand_sync.d",	"d,t,+d(s)",	0x70000179, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amor_sync.w",		"d,t,+d(s)",	0x700001b9, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amor_sync.d",		"d,t,+d(s)",	0x700001f9, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amxor_sync.w",	"d,t,+d(s)",	0x70000239, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amxor_sync.d",	"d,t,+d(s)",	0x70000279, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammax_sync.w",	"d,t,+d(s)",	0x700002b9, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammax_sync.d",	"d,t,+d(s)",	0x700002f9, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammin_sync.w",	"d,t,+d(s)",	0x70000339, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammin_sync.d",	"d,t,+d(s)",	0x70000379, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammaxu_sync.w",	"d,t,+d(s)",	0x700003b9, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammaxu_sync.d",	"d,t,+d(s)",	0x700003f9, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amminu_sync.w",	"d,t,+d(s)",	0x70000439, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amminu_sync.d",	"d,t,+d(s)",	0x70000479, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amswap.w",		"d,t,+d(s)",	0x70000038, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amswap.d",		"d,t,+d(s)",	0x70000078, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amadd.w",		"d,t,+d(s)",	0x700000b8, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amadd.d",		"d,t,+d(s)",	0x700000f8, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amand.w",		"d,t,+d(s)",	0x70000138, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amand.d",		"d,t,+d(s)",	0x70000178, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amor.w",		"d,t,+d(s)",	0x700001b8, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amor.d",		"d,t,+d(s)",	0x700001f8, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amxor.w",		"d,t,+d(s)",	0x70000238, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amxor.d",		"d,t,+d(s)",	0x70000278, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammax.w",		"d,t,+d(s)",	0x700002b8, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammax.d",		"d,t,+d(s)",	0x700002f8, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammin.w",		"d,t,+d(s)",	0x70000338, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammin.d",		"d,t,+d(s)",	0x70000378, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammaxu.w",		"d,t,+d(s)",	0x700003b8, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"ammaxu.d",		"d,t,+d(s)",	0x700003f8, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amminu.w",		"d,t,+d(s)",	0x70000438, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+{"amminu.d",		"d,t,+d(s)",	0x70000478, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
+ 
 /* R5900 VU0 Macromode instructions. */
 {"vabs",		"+7+K,+6+K",	  0x4a0001fd, 0xfe0007ff,	CP,		VU0CH,		VU0,		0,	0 },
 {"vadd",		"+5+K,+6+K,+7+K", 0x4a000028, 0xfe00003f,	CP,		VU0CH,		VU0,		0,	0 },
