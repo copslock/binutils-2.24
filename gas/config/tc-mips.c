@@ -1422,6 +1422,8 @@ enum options
     OPTION_NO_LOONGSON_AMO,
     OPTION_LOONGSON_CSR,
     OPTION_NO_LOONGSON_CSR,
+    OPTION_LOONGSON_EXT3,
+    OPTION_NO_LOONGSON_EXT3,
     OPTION_END_OF_ENUM
   };
 
@@ -1468,6 +1470,8 @@ struct option md_longopts[] =
   {"mno-loongson-amo", no_argument, NULL, OPTION_NO_LOONGSON_AMO},
   {"mloongson-csr", no_argument, NULL, OPTION_LOONGSON_CSR},
   {"mno-loongson-csr", no_argument, NULL, OPTION_NO_LOONGSON_CSR},
+  {"mloongson-ext3", no_argument, NULL, OPTION_LOONGSON_EXT3},
+  {"mno-loongson-ext3", no_argument, NULL, OPTION_NO_LOONGSON_EXT3},
 
   /* Old-style architecture options.  Don't add more of these.  */
   {"m4650", no_argument, NULL, OPTION_M4650},
@@ -1628,6 +1632,10 @@ static const struct mips_ase mips_ases[] = {
  
   { "loongson-csr", ASE_LOONGSON_CSR, 0,
     OPTION_LOONGSON_CSR, OPTION_NO_LOONGSON_CSR,
+    0, 0, -1, -1, -1 },
+ 
+  { "loongson-ext3", ASE_LOONGSON_EXT3, 0,
+    OPTION_LOONGSON_EXT3, OPTION_NO_LOONGSON_EXT3,
     0, 0, -1, -1, -1 }
  
 };
@@ -18210,6 +18218,9 @@ MIPS options:\n\
   fprintf (stream, _("\
 -mloongson-csr			generate Loongson CSR instructions\n\
 -mno-loongson-csr		do not generate Loongson CSR instructions\n"));
+  fprintf (stream, _("\
+-mloongson-csr			generate Loongson EXT3 instructions\n\
+-mno-loongson-csr		do not generate Loongson EXT3 instructions\n"));
   fprintf (stream, _("\
 -minsn32		only generate 32-bit microMIPS instructions\n\
 -mno-insn32		generate all microMIPS instructions\n"));
