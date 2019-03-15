@@ -2588,6 +2588,32 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"punpcklwd",		"D,S,T",	0x4b80000b, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	0,		IL2F|IL3A,	0,	0 },
 {"sequ",		"S,T",		0x46800032, 0xffe007ff,	RD_1|RD_2|WR_CC|FP_D,	0,		IL2E,		0,	0 },
 {"sequ",		"S,T",		0x4b80000c, 0xffe007ff,	RD_1|RD_2|WR_CC|FP_D,	0,		IL2F|IL3A,	0,	0 },
+
+/* Alias of some loongson mmi insn that do integer operands in float regeiter.  */
+{"pand",		"D,S,T",	0x4bc00002, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* and  */
+{"andn",		"D,S,T",	0x4be00002, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* pandn */
+{"pnor",		"D,S,T",	0x4ba00002, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* nor */
+{"por",			"D,S,T",	0x4b20000c, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* or */
+{"pxor",		"D,S,T",	0x4b800002, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* xor */
+{"saddw",		"D,S,T",	0x4b40000c, 0xffe0003f,	WR_1|RD_2|RD_3|FP_S,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* add */
+{"saddd",		"D,S,T",	0x4b60000c, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* dadd */
+{"sadduw",		"D,S,T",	0x4b00000c, 0xffe0003f,	WR_1|RD_2|RD_3|FP_S,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* addu */
+{"ssubw",		"D,S,T",	0x4b40000d, 0xffe0003f,	WR_1|RD_2|RD_3|FP_S,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* sub */
+{"ssubd",		"D,S,T",	0x4b60000d, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* dsub */
+{"ssubuw",		"D,S,T",	0x4b00000d, 0xffe0003f,	WR_1|RD_2|RD_3|FP_S,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* subu */
+{"sseqd",		"S,T",		0x4ba0000c, 0xffe007ff,	RD_1|RD_2|WR_CC|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* seq */
+{"ssequd",		"S,T",		0x4b80000c, 0xffe007ff,	RD_1|RD_2|WR_CC|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* sequ */
+{"ssltd",		"S,T",		0x4ba0000d, 0xffe007ff,	RD_1|RD_2|WR_CC|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* slt */
+{"ssltud",		"S,T",		0x4b80000d, 0xffe007ff,	RD_1|RD_2|WR_CC|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* sltu */
+{"ssled",		"S,T",		0x4ba0000e, 0xffe007ff,	RD_1|RD_2|WR_CC|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* sle */
+{"ssleud",		"S,T",		0x4b80000e, 0xffe007ff,	RD_1|RD_2|WR_CC|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* sleu */
+{"ssllw",		"D,S,T",	0x4b00000e, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* sll */
+{"sslld",		"D,S,T",	0x4b20000e, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* dsll */
+{"ssraw",		"D,S,T",	0x4b40000f, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* sra */
+{"ssrad",		"D,S,T",	0x4b60000f, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* dsra */
+{"ssrlw",		"D,S,T",	0x4b00000f, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* srl */
+{"ssrld",		"D,S,T",	0x4b20000f, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* dsrl */
+
 /* MIPS Enhanced VA Scheme */
 {"lbue",		"t,+j(b)",	0x7c000028, 0xfc00007f, WR_1|RD_3|LDD,		0,		0,		EVA,	0 },
 {"lbue",		"t,A(b)",	0,    (int) M_LBUE_AB,	INSN_MACRO,		0,		0,		EVA,	0 },
