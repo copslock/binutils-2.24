@@ -270,6 +270,9 @@ decode_mips_operand (const char *p)
 /* Loongson AMO support.  */
 #define LAMO	ASE_LOONGSON_AMO
 
+/* Loongson CSR support.  */
+#define LCSR	ASE_LOONGSON_CSR
+
 #define G1      (T3             \
                  |EE            \
                  )
@@ -468,6 +471,22 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"amminu.w",		"d,t,+d(s)",	0x70000438, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
 {"amminu.d",		"d,t,+d(s)",	0x70000478, 0xfc0007ff,	MOD_1|RD_2|SM,		0,		0,		LAMO,	0 },
  
+/* Loongson cpucfg */
+{"cpucfg",		"d,s",		0xc8080118, 0xfc1f07ff,	WR_1|RD_2|LDD,		0,		0,		LCSR,	0 },
+/* Loongson csr */
+{"rdcsr",		"d,s",		0xc8000118, 0xfc1f07ff,	WR_1|RD_2|LDD,		0,		0,		LCSR,	0 },
+{"wrcsr",		"d,s",		0xc8010118, 0xfc1f07ff,	RD_1|RD_2|SM,		0,		0,		LCSR,	0 },
+{"drdcsr",		"d,s",		0xc8020118, 0xfc1f07ff,	WR_1|RD_2|LDD,		0,		0,		LCSR,	0 },
+{"dwrcsr",		"d,s",		0xc8030118, 0xfc1f07ff,	RD_1|RD_2|SM,		0,		0,		LCSR,	0 },
+{"rdgcsr",		"d,s",		0xc8040118, 0xfc1f07ff,	WR_1|RD_2|LDD,		0,		0,		LCSR,	0 },
+{"wrgcsr",		"d,s",		0xc8050118, 0xfc1f07ff,	RD_1|RD_2|SM,		0,		0,		LCSR,	0 },
+{"drdgcsr",		"d,s",		0xc8060118, 0xfc1f07ff,	WR_1|RD_2|LDD,		0,		0,		LCSR,	0 },
+{"dwrgcsr",		"d,s",		0xc8070118, 0xfc1f07ff,	RD_1|RD_2|SM,		0,		0,		LCSR,	0 },
+{"dwrgcsr",		"d,s",		0xc8070118, 0xfc1f07ff,	RD_1|RD_2|SM,		0,		0,		LCSR,	0 },
+{"drdtime",		"d,s",		0xc8090118, 0xfc1f07ff,	WR_1|WR_2|LDD,		0,		0,		LCSR,	0 },
+{"rdtimel",		"d,s",		0xc80a0118, 0xfc1f07ff,	WR_1|WR_2|LDD,		0,		0,		LCSR,	0 },
+{"rdtimeh",		"d,s",		0xc80b0118, 0xfc1f07ff,	WR_1|WR_2|LDD,		0,		0,		LCSR,	0 },
+
 /* R5900 VU0 Macromode instructions. */
 {"vabs",		"+7+K,+6+K",	  0x4a0001fd, 0xfe0007ff,	CP,		VU0CH,		VU0,		0,	0 },
 {"vadd",		"+5+K,+6+K,+7+K", 0x4a000028, 0xfe00003f,	CP,		VU0CH,		VU0,		0,	0 },
