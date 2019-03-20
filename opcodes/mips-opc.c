@@ -500,12 +500,6 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"gsldpc",		"d",		0x7000002b, 0xffff07ff,	WR_1|LDD,		0,		0,		LEXT3,	0 },
 {"gsdaui",		"t,s,u",	0x74000000, 0xfc000000,	WR_1|RD_2,		0,		0,		LEXT3,	0 },
 
-/* Loongson spw */
-{"lddir",		"t,s,h",	0xc8000098, 0xfc0007ff,	WR_1|RD_2|RD_3|LDD,	0,		IL3A,		0,	0 },
-{"lwdir",		"t,s,h",	0xc8000018, 0xfc0007ff,	WR_1|RD_2|RD_3|LDD,	0,		IL3A,		0,	0 },
-{"ldpte",		"s,h",		0xc80000d8, 0xfc1f07ff,	WR_1|RD_2|LDD,		0,		IL3A,		0,	0 },
-{"lwpte",		"s,h",		0xc8000058, 0xfc1f07ff,	WR_1|RD_2|LDD,		0,		IL3A,		0,	0 },
-
 /* R5900 VU0 Macromode instructions. */
 {"vabs",		"+7+K,+6+K",	  0x4a0001fd, 0xfe0007ff,	CP,		VU0CH,		VU0,		0,	0 },
 {"vadd",		"+5+K,+6+K,+7+K", 0x4a000028, 0xfe00003f,	CP,		VU0CH,		VU0,		0,	0 },
