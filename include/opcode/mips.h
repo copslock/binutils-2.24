@@ -1117,8 +1117,6 @@ static const unsigned int mips_isa_table[] =
 #define ASE_VIRT64		0x00000400
 /* Loongson AMO Extension  */
 #define ASE_LOONGSON_AMO	0x00000800
-/* Loongson CSR Extension  */
-#define ASE_LOONGSON_CSR	0x00001000
 
 /* MIPS ISA defines, use instead of hardcoding ISA level.  */
 
