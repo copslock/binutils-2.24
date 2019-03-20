@@ -1418,8 +1418,6 @@ enum options
     OPTION_NO_PDR,
     OPTION_MVXWORKS_PIC,
     OPTION_NAN,
-    OPTION_LOONGSON_AMO,
-    OPTION_NO_LOONGSON_AMO,
     OPTION_END_OF_ENUM
   };
 
@@ -1462,8 +1460,6 @@ struct option md_longopts[] =
   {"mno-mcu", no_argument, NULL, OPTION_NO_MCU},
   {"mvirt", no_argument, NULL, OPTION_VIRT},
   {"mno-virt", no_argument, NULL, OPTION_NO_VIRT},
-  {"mloongson-amo", no_argument, NULL, OPTION_LOONGSON_AMO},
-  {"mno-loongson-amo", no_argument, NULL, OPTION_NO_LOONGSON_AMO},
 
   /* Old-style architecture options.  Don't add more of these.  */
   {"m4650", no_argument, NULL, OPTION_M4650},
@@ -1616,12 +1612,7 @@ static const struct mips_ase mips_ases[] = {
 
   { "virt", ASE_VIRT, ASE_VIRT64,
     OPTION_VIRT, OPTION_NO_VIRT,
-    2, 2, 2, 2 },
-
-  { "loongson-amo", ASE_LOONGSON_AMO, 0,
-    OPTION_LOONGSON_AMO, OPTION_NO_LOONGSON_AMO,
-    0, 0, -1, -1, -1 }
- 
+    2, 2, 2, 2 }
 };
 
 /* The set of ASEs that require -mfp64.  */
@@ -18196,9 +18187,6 @@ MIPS options:\n\
   fprintf (stream, _("\
 -mvirt			generate Virtualization instructions\n\
 -mno-virt		do not generate Virtualization instructions\n"));
-  fprintf (stream, _("\
--mloongson-amo			generate Loongson AMO instructions\n\
--mno-loongson-amo		do not generate Loongson AMO instructions\n"));
   fprintf (stream, _("\
 -minsn32		only generate 32-bit microMIPS instructions\n\
 -mno-insn32		generate all microMIPS instructions\n"));
