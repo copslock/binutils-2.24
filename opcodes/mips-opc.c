@@ -1508,6 +1508,7 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"padduw",		"d,s,t",	0x70000428, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
 {"padsbh",		"d,s,t",	0x70000128, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
 {"pand",		"d,s,t",	0x70000489, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
+{"pand",		"D,S,T",	0x4bc00002, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* and  */
 {"pceqb",		"d,s,t",	0x700002a8, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
 {"pceqh",		"d,s,t",	0x700001a8, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
 {"pceqw",		"d,s,t",	0x700000a8, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
@@ -1567,8 +1568,10 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"pmultuw",		"d,s,t",	0x70000329, 0xfc0007ff, WR_1|RD_2|RD_3|WR_HILO,	0,		MMI,		0,	0 },
 {"pmultw",		"d,s,t",	0x70000309, 0xfc0007ff, WR_1|RD_2|RD_3|WR_HILO,	0,		MMI,		0,	0 },
 {"pnor",		"d,s,t",	0x700004e9, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
+{"pnor",		"D,S,T",	0x4ba00002, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* nor */
 {"pop",			"d,v",		0x7000002c, 0xfc1f07ff, WR_1|RD_2,		0,		IOCT,		0,	0 },
 {"por",			"d,s,t",	0x700004a9, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
+{"por",			"D,S,T",	0x4b20000c, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* or */
 {"ppac5",		"d,t",		0x700007c8, 0xffe007ff, WR_1|RD_2,		0,		MMI,		0,	0 },
 {"ppacb",		"d,s,t",	0x700006c8, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
 {"ppach",		"d,s,t",	0x700005c8, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
@@ -1583,6 +1586,7 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"psubuh",		"d,s,t",	0x70000568, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
 {"psubuw",		"d,s,t",	0x70000468, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
 {"pxor",		"d,s,t",	0x700004c9, 0xfc0007ff, WR_1|RD_2|RD_3,		0,		MMI,		0,	0 },
+{"pxor",		"D,S,T",	0x4b800002, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* xor */
   /* pref and prefx are at the start of the table.  */
 {"pul.ps",		"D,V,T",	0x46c0002e, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	0,		I5_33,		0,	0 },
 {"puu.ps",		"D,V,T",	0x46c0002f, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	0,		I5_33,		0,	0 },
@@ -2510,11 +2514,7 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"sequ",		"S,T",		0x4b80000c, 0xffe007ff,	RD_1|RD_2|WR_CC|FP_D,	0,		IL2F|IL3A,	0,	0 },
 
 /* Alias of some loongson mmi insn that do integer operands in float regeiter.  */
-{"pand",		"D,S,T",	0x4bc00002, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* and  */
 {"andn",		"D,S,T",	0x4be00002, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* pandn */
-{"pnor",		"D,S,T",	0x4ba00002, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* nor */
-{"por",			"D,S,T",	0x4b20000c, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* or */
-{"pxor",		"D,S,T",	0x4b800002, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* xor */
 {"saddw",		"D,S,T",	0x4b40000c, 0xffe0003f,	WR_1|RD_2|RD_3|FP_S,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* add */
 {"saddd",		"D,S,T",	0x4b60000c, 0xffe0003f,	WR_1|RD_2|RD_3|FP_D,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* dadd */
 {"sadduw",		"D,S,T",	0x4b00000c, 0xffe0003f,	WR_1|RD_2|RD_3|FP_S,	INSN2_ALIAS,	IL2F|IL3A,	0,	0 },  /* addu */
