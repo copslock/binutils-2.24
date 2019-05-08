@@ -765,6 +765,13 @@ parse_mips_dis_option (const char *option, unsigned int len)
       return;
     }
 
+  /* Put here for match ext2 frist */
+  if (CONST_STRNEQ (option, "loongson-ext2"))
+    {
+      mips_ase |= ASE_LOONGSON_EXT2;
+      return;
+    }
+
   /* Look for the = that delimits the end of the option name.  */
   for (i = 0; i < len; i++)
     if (option[i] == '=')
@@ -2124,6 +2131,10 @@ with the -M switch (multiple options should be separated by commas):\n"));
 
   fprintf (stream, _("\n\
   loongson-ext             Recognize the Loongson EXTensions (EXT)\n\
+                           instructions.\n"));
+
+  fprintf (stream, _("\n\
+  loongson-ext2            Recognize the Loongson EXTensions R2 (EXT2)\n\
                            instructions.\n"));
 
   fprintf (stream, _("\n\
