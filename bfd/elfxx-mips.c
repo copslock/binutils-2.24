@@ -6422,7 +6422,10 @@ _bfd_elf_mips_mach (flagword flags)
     case E_MIPS_MACH_GS464:
       return bfd_mach_mips_gs464;
 
-    case E_MIPS_MACH_OCTEON2:
+    case E_MIPS_MACH_GS464E:
+      return bfd_mach_mips_gs464e;
+
+	case E_MIPS_MACH_OCTEON2:
       return bfd_mach_mips_octeon2;
 
     case E_MIPS_MACH_OCTEON:
@@ -11555,6 +11558,10 @@ mips_set_isa_flags (bfd *abfd)
       val = E_MIPS_ARCH_64R2 | E_MIPS_MACH_GS464;
       break;
 
+    case bfd_mach_mips_gs464e:
+      val = E_MIPS_ARCH_64R2 | E_MIPS_MACH_GS464E;
+      break;
+
     case bfd_mach_mips3000:
       val = E_MIPS_ARCH_1;
       break;
@@ -14229,6 +14236,7 @@ static const struct mips_mach_extension mips_mach_extensions[] =
   { bfd_mach_mips_octeon2, bfd_mach_mips_octeonp },
   { bfd_mach_mips_octeonp, bfd_mach_mips_octeon },
   { bfd_mach_mips_octeon, bfd_mach_mipsisa64r2 },
+  { bfd_mach_mips_gs464e, bfd_mach_mips_gs464 },
   { bfd_mach_mips_gs464, bfd_mach_mipsisa64r2 },
 
   /* MIPS64 extensions.  */
