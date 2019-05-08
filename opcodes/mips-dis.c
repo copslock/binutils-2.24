@@ -533,8 +533,8 @@ const struct mips_arch_choice mips_arch_choices[] =
     NULL, 0, mips_hwr_names_numeric },
 
   { "loongson3a",   1, bfd_mach_mips_loongson_3a, CPU_LOONGSON_3A,
-    ISA_MIPS64R2 | INSN_LOONGSON_3A, ASE_LOONGSON_MMI, mips_cp0_names_numeric,
-    NULL, 0, mips_hwr_names_numeric },
+    ISA_MIPS64R2 | INSN_LOONGSON_3A, ASE_LOONGSON_MMI | ASE_LOONGSON_CAM, 
+    mips_cp0_names_numeric,NULL, 0, mips_hwr_names_numeric },
 
   { "octeon",   1, bfd_mach_mips_octeon, CPU_OCTEON,
     ISA_MIPS64R2 | INSN_OCTEON, 0, mips_cp0_names_numeric, NULL, 0,
@@ -750,6 +750,12 @@ parse_mips_dis_option (const char *option, unsigned int len)
   if (CONST_STRNEQ (option, "loongson-mmi"))
     {
       mips_ase |= ASE_LOONGSON_MMI;
+      return;
+    }
+
+  if (CONST_STRNEQ (option, "loongson-cam"))
+    {
+      mips_ase |= ASE_LOONGSON_CAM;
       return;
     }
 
@@ -2105,6 +2111,10 @@ with the -M switch (multiple options should be separated by commas):\n"));
   fprintf (stream, _("\n\
   loongson-mmi             Recognize the Loongson MultiMedia extensions\n\
                            Instructions (MMI) ASE instructions.\n"));
+
+  fprintf (stream, _("\n\
+  loongson-cam             Recognize the Loongson Content Address Memory (CAM)\n\
+                           instructions.\n"));
 
   fprintf (stream, _("\n\
   gpr-names=ABI            Print GPR names according to  specified ABI.\n\

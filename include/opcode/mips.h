@@ -1117,6 +1117,8 @@ static const unsigned int mips_isa_table[] =
 #define ASE_VIRT64		0x00000400
 /* Loongson MultiMedia extensions Instructions (MMI).  */
 #define ASE_LOONGSON_MMI   0x00200000
+/* Loongson Content Address Memory (CAM).  */
+#define ASE_LOONGSON_CAM   0x00400000
 
 /* MIPS ISA defines, use instead of hardcoding ISA level.  */
 

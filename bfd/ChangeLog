@@ -1,3 +1,7 @@
+2018-08-29  Chenghua Xu  <paul.hua.gm@gmail.com>
+
+	* elfxx-mips.c (print_mips_ases): Add CAM extension.          
+
 2018-07-20  Chenghua Xu  <paul.hua.gm@gmail.com>
 	Maciej W. Rozycki  <macro@mips.com>
 
