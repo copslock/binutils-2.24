@@ -529,11 +529,11 @@ const struct mips_arch_choice mips_arch_choices[] =
     NULL, 0, mips_hwr_names_numeric },
 
   { "loongson2f",   1, bfd_mach_mips_loongson_2f, CPU_LOONGSON_2F,
-    ISA_MIPS3 | INSN_LOONGSON_2F, 0, mips_cp0_names_numeric,
+    ISA_MIPS3 | INSN_LOONGSON_2F, ASE_LOONGSON_MMI, mips_cp0_names_numeric,
     NULL, 0, mips_hwr_names_numeric },
 
   { "loongson3a",   1, bfd_mach_mips_loongson_3a, CPU_LOONGSON_3A,
-    ISA_MIPS64R2 | INSN_LOONGSON_3A, 0, mips_cp0_names_numeric,
+    ISA_MIPS64R2 | INSN_LOONGSON_3A, ASE_LOONGSON_MMI, mips_cp0_names_numeric,
     NULL, 0, mips_hwr_names_numeric },
 
   { "octeon",   1, bfd_mach_mips_octeon, CPU_OCTEON,
@@ -746,6 +746,13 @@ parse_mips_dis_option (const char *option, unsigned int len)
       return;
     }
   
+
+  if (CONST_STRNEQ (option, "loongson-mmi"))
+    {
+      mips_ase |= ASE_LOONGSON_MMI;
+      return;
+    }
+
   /* Look for the = that delimits the end of the option name.  */
   for (i = 0; i < len; i++)
     if (option[i] == '=')
@@ -1630,7 +1637,6 @@ print_mips16_insn_arg (struct disassemble_info *info,
     }
 }
 
-
 /* Check if the given address is the last word of a MIPS16 PLT entry.
    This word is data and depending on the value it may interfere with
    disassembly of further PLT entries.  We make use of the fact PLT
@@ -2095,6 +2101,10 @@ with the -M switch (multiple options should be separated by commas):\n"));
 
   fprintf (stream, _("\n\
   virt            Recognize the virtualization ASE instructions.\n"));
+
+  fprintf (stream, _("\n\
+  loongson-mmi             Recognize the Loongson MultiMedia extensions\n\
+                           Instructions (MMI) ASE instructions.\n"));
 
   fprintf (stream, _("\n\
   gpr-names=ABI            Print GPR names according to  specified ABI.\n\

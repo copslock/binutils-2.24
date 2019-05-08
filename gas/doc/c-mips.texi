@@ -185,6 +185,13 @@ Generate code for the Virtualization Application Specific Extension.
 This tells the assembler to accept Virtualization instructions.
 @samp{-mno-virt} turns off this option.
 
+@item -mloongson-mmi
+@itemx -mno-loongson-mmi
+Generate code for the Loongson MultiMedia extensions Instructions (MMI)
+Application Specific Extension.  This tells the assembler to accept MMI
+instructions.
+@samp{-mno-loongson-mmi} turns off this option.
+
 @item -minsn32
 @itemx -mno-insn32
 Only use 32-bit instruction encodings when generating code for the
@@ -883,6 +890,14 @@ provide finer control of disabling and enabling double-precision
 float-point operations.  These directives always override the default
 (that double-precision operations are accepted) or the command-line
 options (@samp{-msingle-float} and @samp{-mdouble-float}).
+
+@cindex Loongson MultiMedia extensions Instructions (MMI) generation override
+@kindex @code{.set loongson-mmi}
+@kindex @code{.set noloongson-mmi}
+The directive @code{.set loongson-mmi} makes the assembler accept
+instructions from the MMI Extension from that point on in the assembly.
+The @code{.set noloongson-mmi} directive prevents MMI instructions from
+being accepted.
 
 Traditional MIPS assemblers do not support these directives.
 

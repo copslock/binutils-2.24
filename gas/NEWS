@@ -1,4 +1,6 @@
 -*- text -*-
+* Add support for the MIPS Loongson MultiMedia extensions Instructions (MMI)
+  ASE.
 
 Changes in 2.24:
 

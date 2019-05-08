@@ -1,3 +1,8 @@
+2018-07-20  Chenghua Xu  <paul.hua.gm@gmail.com>
+	Maciej W. Rozycki  <macro@mips.com>
+
+	* readelf.c (print_mips_ases): Add MMI extension.
+
 2013-11-22  Cory Fields  <cory@coryfields.com>
 
 	* windres.c (define_resource): Use zero for timestamp, making

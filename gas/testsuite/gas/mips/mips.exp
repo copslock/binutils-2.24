@@ -1017,6 +1017,9 @@ if { [istarget mips*-*-vxworks*] } {
     run_dump_test "loongson-3a-2"
     run_dump_test "loongson-3a-3"
 
+    run_dump_test "loongson-2f-mmi"
+    run_dump_test "loongson-3a-mmi"
+
     run_dump_test_arches "octeon"	[mips_arch_list_matching octeon]
     run_dump_test_arches "octeon-saa-saad" [mips_arch_list_matching octeonp]
     run_list_test_arches "octeon-ill"	[mips_arch_list_matching octeon]

@@ -1115,6 +1115,8 @@ static const unsigned int mips_isa_table[] =
 /* Virtualization ASE */
 #define ASE_VIRT		0x00000200
 #define ASE_VIRT64		0x00000400
+/* Loongson MultiMedia extensions Instructions (MMI).  */
+#define ASE_LOONGSON_MMI   0x00200000
 
 /* MIPS ISA defines, use instead of hardcoding ISA level.  */
 

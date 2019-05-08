@@ -1418,6 +1418,8 @@ enum options
     OPTION_NO_PDR,
     OPTION_MVXWORKS_PIC,
     OPTION_NAN,
+    OPTION_LOONGSON_MMI,
+    OPTION_NO_LOONGSON_MMI,
     OPTION_END_OF_ENUM
   };
 
@@ -1460,6 +1462,8 @@ struct option md_longopts[] =
   {"mno-mcu", no_argument, NULL, OPTION_NO_MCU},
   {"mvirt", no_argument, NULL, OPTION_VIRT},
   {"mno-virt", no_argument, NULL, OPTION_NO_VIRT},
+  {"mloongson-mmi", no_argument, NULL, OPTION_LOONGSON_MMI},
+  {"mno-loongson-mmi", no_argument, NULL, OPTION_NO_LOONGSON_MMI},
 
   /* Old-style architecture options.  Don't add more of these.  */
   {"m4650", no_argument, NULL, OPTION_M4650},
@@ -1612,7 +1616,12 @@ static const struct mips_ase mips_ases[] = {
 
   { "virt", ASE_VIRT, ASE_VIRT64,
     OPTION_VIRT, OPTION_NO_VIRT,
-    2, 2, 2, 2 }
+    2, 2, 2, 2 },
+
+  { "loongson-mmi", ASE_LOONGSON_MMI, 0,
+    OPTION_LOONGSON_MMI, OPTION_NO_LOONGSON_MMI,
+    0, 0, -1, -1}
+
 };
 
 /* The set of ASEs that require -mfp64.  */
@@ -17853,7 +17862,7 @@ static const struct mips_cpu_info mips_cpu_info_table[] =
   { "r5900",          0, 0,			ISA_MIPS3,    CPU_R5900 },
   /* ST Microelectronics Loongson 2E and 2F cores */
   { "loongson2e",     0, 0,			ISA_MIPS3,    CPU_LOONGSON_2E },
-  { "loongson2f",     0, 0,			ISA_MIPS3,    CPU_LOONGSON_2F },
+  { "loongson2f",     0, ASE_LOONGSON_MMI,	ISA_MIPS3,    CPU_LOONGSON_2F },
 
   /* MIPS IV */
   { "r8000",          0, 0,			ISA_MIPS4,    CPU_R8000 },
@@ -17945,7 +17954,7 @@ static const struct mips_cpu_info mips_cpu_info_table[] =
 
   /* MIPS 64 Release 2 */
   
-  { "loongson3a",     0, 0,			ISA_MIPS64R2,   CPU_LOONGSON_3A },
+  { "loongson3a",     0, ASE_LOONGSON_MMI,			ISA_MIPS64R2,   CPU_LOONGSON_3A },
 
   /* Cavium Networks Octeon CPU core */
   { "octeon",	      0, 0,			ISA_MIPS64R2, CPU_OCTEON },
@@ -18187,6 +18196,9 @@ MIPS options:\n\
   fprintf (stream, _("\
 -mvirt			generate Virtualization instructions\n\
 -mno-virt		do not generate Virtualization instructions\n"));
+  fprintf (stream, _("\
+-mloongson-mmi		generate Loongson MultiMedia extensions Instructions (MMI) instructions\n\
+-mno-loongson-mmi	do not generate Loongson MultiMedia extensions Instructions\n"));
   fprintf (stream, _("\
 -minsn32		only generate 32-bit microMIPS instructions\n\
 -mno-insn32		generate all microMIPS instructions\n"));

@@ -1,3 +1,14 @@
+2018-07-20  Chenghua Xu  <paul.hua.gm@gmail.com>
+	Maciej W. Rozycki  <macro@mips.com>
+
+	* mips-dis.c (mips_arch_choices): Add MMI to loongson2f and
+	loongson3a descriptors.
+	(parse_mips_ase_option): Handle -M loongson-mmi option.
+	(print_mips_disassembler_options): Document -M loongson-mmi.
+	* mips-opc.c (LMMI): New macro.
+	(mips_opcodes): Replace IL2F|IL3A marking with LMMI for MMI
+	instructions.
+
 2013-11-20  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	* aarch64-opc.c (aarch64_pstatefields): Update.
