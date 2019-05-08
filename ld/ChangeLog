@@ -1,3 +1,10 @@
+2018-08-24  Chenghua Xu  <paul.hua.gm@gmail.com>
+
+	* testsuite/ld-mips-elf/mips-elf-flags.exp
+	(check_ld_support_32bit, check_is_32bit_args): New procedures.
+	(good_combination, bad_combination): Skip 32bit test if ld
+	not support 32bit emulations.
+
 2013-11-25  Yufeng Zhang  <yufeng.zhang@arm.com>
 
 	Backport from master
