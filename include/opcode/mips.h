@@ -881,7 +881,7 @@ struct mips_opcode
    "+S" Length-minus-one field of cins/exts.  Requires msb position
 	of the field to be <= 63.
 
-   Loongson-3A:
+   Loongson-ext ASE:
    "+a" 8-bit signed offset in bit 6 (OP_*_OFFSET_A)
    "+b" 8-bit signed offset in bit 3 (OP_*_OFFSET_B)
    "+c" 9-bit signed offset in bit 6 (OP_*_OFFSET_C)
@@ -1090,8 +1090,6 @@ static const unsigned int mips_isa_table[] =
 #define INSN_LOONGSON_2E          0x40000000
 /* ST Microelectronics Loongson 2F.  */
 #define INSN_LOONGSON_2F          0x80000000
-/* Loongson 3A.  */
-#define INSN_LOONGSON_3A          0x00000400
 /* RMI Xlr instruction */
 #define INSN_XLR                 0x00000020
 
@@ -1175,7 +1173,7 @@ static const unsigned int mips_isa_table[] =
 #define CPU_SB1         12310201        /* octal 'SB', 01.  */
 #define CPU_LOONGSON_2E 3001
 #define CPU_LOONGSON_2F 3002
-#define CPU_LOONGSON_3A 3003
+#define CPU_GS464	3003
 #define CPU_OCTEON	6501
 #define CPU_OCTEONP	6601
 #define CPU_OCTEON2	6502
@@ -1231,9 +1229,6 @@ cpu_is_member (int cpu, unsigned int mask)
 
     case CPU_LOONGSON_2F:
       return (mask & INSN_LOONGSON_2F) != 0;
-
-    case CPU_LOONGSON_3A:
-      return (mask & INSN_LOONGSON_3A) != 0;
 
     case CPU_OCTEON:
       return (mask & INSN_OCTEON) != 0;

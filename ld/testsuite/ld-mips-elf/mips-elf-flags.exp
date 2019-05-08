@@ -186,6 +186,8 @@ isa_conflict { "-march=r4010 -32" "-march=r4650 -32" } 4010 4650
 isa_conflict { "-mips3 -mgp32 -32" "-mips32 -32" } 4000 isa32
 isa_conflict { "-march=sb1 -mgp32 -32" "-mips32r2 -32" } sb1 isa32r2
 isa_conflict { "-march=sb1 -32" "-mips64r2 -32" } sb1 isa64r2
+isa_conflict { "-march=loongson2e -32" "-march=loongson2f -32" } loongson_2e loongson_2f
+isa_conflict { "-march=gs464 -32" "-march=loongson2f -32" } gs464 loongson_2f
 
 regsize_conflict { "-mips4 -mgp64 -mabi=o64" "-mips2 -32" }
 regsize_conflict { "-mips4 -mabi=o64" "-mips4 -mabi=32" }
