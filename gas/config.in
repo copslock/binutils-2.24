@@ -36,6 +36,9 @@
 /* Default emulation. */
 #undef DEFAULT_EMULATION
 
+/* Define to 1 if you want to fix Loongson3 LLSC Errata by default. */
+#undef DEFAULT_MIPS_FIX_LOONGSON3_LLSC
+
 /* Supported emulations. */
 #undef EMULATIONS
 

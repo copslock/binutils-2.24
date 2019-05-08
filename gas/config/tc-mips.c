@@ -739,6 +739,8 @@ static struct mips_cl_insn nop_insn;
 static struct mips_cl_insn mips16_nop_insn;
 static struct mips_cl_insn micromips_nop16_insn;
 static struct mips_cl_insn micromips_nop32_insn;
+/* Sync instructions used by insert sync.  */
+static struct mips_cl_insn sync_insn;
 
 /* The appropriate nop for the current mode.  */
 #define NOP_INSN (mips_opts.mips16					\
@@ -868,12 +870,6 @@ static int mips_fix_24k;
 /* ...likewise -mfix-cn63xxp1 */
 static bfd_boolean mips_fix_cn63xxp1;
 
-/* ...likewise -mfix-loongson3-llsc
- * Default is add sync before ll/lld
- * So make the default value as one.
- */
-static bfd_boolean mips_fix_loongson3_llsc = TRUE;
-
 /* ...likewise -mfix-loongson3-10209
  */
 static bfd_boolean mips_fix_loongson3_10209 = TRUE;
@@ -881,6 +877,9 @@ static bfd_boolean mips_fix_loongson3_10209 = TRUE;
 /* ...likewise -mfix-loongson3-10209l
  */
 static bfd_boolean mips_fix_loongson3_10209l = FALSE;
+
+/* ...likewise -mfix-loongson3-llsc.  */
+static bfd_boolean mips_fix_loongson3_llsc = DEFAULT_MIPS_FIX_LOONGSON3_LLSC;
 
 /* We don't relax branches by default, since this causes us to expand
    `la .l2 - .l1' if there's a branch between .l1 and .l2, because we
@@ -1491,6 +1490,8 @@ struct option md_longopts[] =
   {"mfix7000", no_argument, NULL, OPTION_M7000_HILO_FIX},
   {"no-fix-7000", no_argument, NULL, OPTION_MNO_7000_HILO_FIX},
   {"mno-fix7000", no_argument, NULL, OPTION_MNO_7000_HILO_FIX},
+  {"mfix-loongson3-llsc",   no_argument, NULL, OPTION_FIX_LOONGSON3_LLSC},
+  {"mno-fix-loongson3-llsc", no_argument, NULL, OPTION_NO_FIX_LOONGSON3_LLSC},
   {"mfix-loongson2f-jump", no_argument, NULL, OPTION_FIX_LOONGSON2F_JUMP},
   {"mno-fix-loongson2f-jump", no_argument, NULL, OPTION_NO_FIX_LOONGSON2F_JUMP},
   {"mfix-loongson2f-nop", no_argument, NULL, OPTION_FIX_LOONGSON2F_NOP},
@@ -3408,6 +3409,10 @@ md_begin (void)
 		nop_insn.insn_opcode = LOONGSON2F_NOP_INSN;
 	      nop_insn.fixed_p = 1;
 	    }
+        if (sync_insn.insn_mo == NULL && strcmp (name, "sync") == 0)
+          {
+           create_insn (&sync_insn, mips_opcodes + i);
+          }
 	  ++i;
 	}
       while ((i < NUMOPCODES) && !strcmp (mips_opcodes[i].name, name));
@@ -6145,6 +6150,22 @@ fix_loongson2f (struct mips_cl_insn * ip)
     fix_loongson2f_jump (ip);
 }
 
+/* Fix loongson3 llsc errata: Insert sync before ll/lld. */
+static void
+fix_loongson3_llsc (struct mips_cl_insn * ip)
+{
+  gas_assert (!HAVE_CODE_COMPRESSION);
+
+  /* Skip if there is a sync before ll/lld.  */
+  if ((strcmp (ip->insn_mo->name, "ll") == 0
+       || strcmp (ip->insn_mo->name, "lld") == 0)
+      && (strcmp (history[0].insn_mo->name, "sync") != 0))
+    {
+      add_fixed_insn (&sync_insn);
+      insert_into_history (0, 1, &sync_insn);
+    }
+}
+
 /* IP is a branch that has a delay slot, and we need to fill it
    automatically.   Return true if we can do that by swapping IP
    with the previous instruction.
@@ -6553,6 +6574,9 @@ append_insn (struct mips_cl_insn *ip, expressionS *address_expr,
 
   if (mips_fix_loongson2f && !HAVE_CODE_COMPRESSION)
     fix_loongson2f (ip);
+
+  if (mips_fix_loongson3_llsc && !HAVE_CODE_COMPRESSION)
+    fix_loongson3_llsc (ip);
 
   file_ase_mips16 |= mips_opts.mips16;
   file_ase_micromips |= mips_opts.micromips;
@@ -18244,7 +18268,20 @@ MIPS options:\n\
 -mno-insn32		generate all microMIPS instructions\n"));
   fprintf (stream, _("\
 -mfix-loongson2f-jump	work around Loongson2F JUMP instructions\n\
--mfix-loongson2f-nop	work around Loongson2F NOP errata\n\
+-mfix-loongson2f-nop   work around Loongson2F NOP errata\n"));
+  fprintf (stream, _("\
+-mfix-loongson3-llsc   "));
+if (DEFAULT_MIPS_FIX_LOONGSON3_LLSC)
+{
+  fprintf (stream, _("(default: -mfix-loongson3-llsc)\n"));
+}
+else
+{
+  fprintf (stream, _("(default: -mno-fix-loongson3-llsc)\n"));
+}
+  fprintf (stream, _("\
+                   work around Loongson3 LLSC errata\n"));
+  fprintf (stream, _("\
 -mfix-vr4120		work around certain VR4120 errata\n\
 -mfix-vr4130		work around VR4130 mflo/mfhi errata\n\
 -mfix-24k		insert a nop after ERET and DERET instructions\n\
