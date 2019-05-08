@@ -116,7 +116,12 @@ proc good_combination {arglist flags} {
 
 	    foreach flag $flags {
 		if {[lsearch -exact $gotflags $flag] < 0} {
-		    set failed 1
+		    # The mips*-*-irix* not use o32 flags.
+		    if {[istarget mips*-*-irix*] && $flag == "o32"} {
+			set failed 0
+		    } else {
+			set failed 1
+		    }
 		}
 	    }
 	    if {$failed} {
