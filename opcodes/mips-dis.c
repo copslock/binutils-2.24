@@ -533,7 +533,7 @@ const struct mips_arch_choice mips_arch_choices[] =
     NULL, 0, mips_hwr_names_numeric },
 
   { "loongson3a",   1, bfd_mach_mips_loongson_3a, CPU_LOONGSON_3A,
-    ISA_MIPS64R2 | INSN_LOONGSON_3A, ASE_LOONGSON_MMI | ASE_LOONGSON_CAM, 
+    ISA_MIPS64R2, ASE_LOONGSON_MMI | ASE_LOONGSON_CAM | ASE_LOONGSON_EXT, 
     mips_cp0_names_numeric,NULL, 0, mips_hwr_names_numeric },
 
   { "octeon",   1, bfd_mach_mips_octeon, CPU_OCTEON,
@@ -756,6 +756,12 @@ parse_mips_dis_option (const char *option, unsigned int len)
   if (CONST_STRNEQ (option, "loongson-cam"))
     {
       mips_ase |= ASE_LOONGSON_CAM;
+      return;
+    }
+
+  if (CONST_STRNEQ (option, "loongson-ext"))
+    {
+      mips_ase |= ASE_LOONGSON_EXT;
       return;
     }
 
@@ -2114,6 +2120,10 @@ with the -M switch (multiple options should be separated by commas):\n"));
 
   fprintf (stream, _("\n\
   loongson-cam             Recognize the Loongson Content Address Memory (CAM)\n\
+                           instructions.\n"));
+
+  fprintf (stream, _("\n\
+  loongson-ext             Recognize the Loongson EXTensions (EXT)\n\
                            instructions.\n"));
 
   fprintf (stream, _("\n\
