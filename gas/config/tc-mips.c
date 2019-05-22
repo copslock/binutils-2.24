@@ -1425,6 +1425,8 @@ enum options
     OPTION_NO_LOONGSON_EXT,
     OPTION_LOONGSON_EXT2,
     OPTION_NO_LOONGSON_EXT2,
+    OPTION_LOONGSON_AMO,
+    OPTION_NO_LOONGSON_AMO,
     OPTION_END_OF_ENUM
   };
 
@@ -1475,6 +1477,8 @@ struct option md_longopts[] =
   {"mno-loongson-ext", no_argument, NULL, OPTION_NO_LOONGSON_EXT},
   {"mloongson-ext2", no_argument, NULL, OPTION_LOONGSON_EXT2},
   {"mno-loongson-ext2", no_argument, NULL, OPTION_NO_LOONGSON_EXT2},
+  {"mloongson-amo", no_argument, NULL, OPTION_LOONGSON_AMO},
+  {"mno-loongson-amo", no_argument, NULL, OPTION_NO_LOONGSON_AMO},
 
   /* Old-style architecture options.  Don't add more of these.  */
   {"m4650", no_argument, NULL, OPTION_M4650},
@@ -1645,6 +1649,10 @@ static const struct mips_ase mips_ases[] = {
 
   { "loongson-ext2", ASE_LOONGSON_EXT | ASE_LOONGSON_EXT2, 0,
     OPTION_LOONGSON_EXT2, OPTION_NO_LOONGSON_EXT2,
+    0, 0, -1, -1},
+
+  { "loongson-amo", ASE_LOONGSON_AMO, 0,
+    OPTION_LOONGSON_AMO, OPTION_NO_LOONGSON_AMO,
     0, 0, -1, -1}
 };
 
@@ -18263,6 +18271,9 @@ MIPS options:\n\
   fprintf (stream, _("\
 -mloongson-ext2		generate Loongson EXTensions R2 (EXT2) instructions\n\
 -mno-loongson-ext2	do not generate Loongson EXTensions R2 Instructions\n"));
+  fprintf (stream, _("\
+-mloongson-amo			generate Loongson AMO instructions\n\
+-mno-loongson-amo		do not generate Loongson AMO instructions\n"));
   fprintf (stream, _("\
 -minsn32		only generate 32-bit microMIPS instructions\n\
 -mno-insn32		generate all microMIPS instructions\n"));
