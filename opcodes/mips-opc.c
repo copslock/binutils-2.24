@@ -272,6 +272,9 @@ decode_mips_operand (const char *p)
 /* Loongson CSR support.  */
 #define LCSR	ASE_LOONGSON_CSR
 
+/* Loongson EXT3 support.  */
+#define LEXT3	ASE_LOONGSON_EXT3
+
 #define G1      (T3             \
                  |EE            \
                  )
@@ -501,6 +504,16 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"drdtime",		"d,s",		0xc8090118, 0xfc1f07ff,	WR_1|WR_2|LDD,		0,		0,		LCSR,	0 },
 {"rdtimel",		"d,s",		0xc80a0118, 0xfc1f07ff,	WR_1|WR_2|LDD,		0,		0,		LCSR,	0 },
 {"rdtimeh",		"d,s",		0xc80b0118, 0xfc1f07ff,	WR_1|WR_2|LDD,		0,		0,		LCSR,	0 },
+
+/* Loongson ext3 */
+{"gsandn",		"d,s,t",	0x70000483, 0xfc0007ff,	WR_1|RD_2|RD_3,		0,		0,		LEXT3,	0 },
+{"gsorn",		"d,s,t",	0x70000486, 0xfc0007ff,	WR_1|RD_2|RD_3,		0,		0,		LEXT3,	0 },
+{"gsmulth",		"d,s,t",	0x7000001a, 0xfc0007ff,	WR_1|RD_2|RD_3,		0,		0,		LEXT3,	0 },
+{"gsmulthu",		"d,s,t",	0x7000001b, 0xfc0007ff,	WR_1|RD_2|RD_3,		0,		0,		LEXT3,	0 },
+{"gsdmulth",		"d,s,t",	0x70000018, 0xfc0007ff,	WR_1|RD_2|RD_3,		0,		0,		LEXT3,	0 },
+{"gsdmulthu",		"d,s,t",	0x70000019, 0xfc0007ff,	WR_1|RD_2|RD_3,		0,		0,		LEXT3,	0 },
+{"gsldpc",		"d",		0x7000002b, 0xffff07ff,	WR_1|LDD,		0,		0,		LEXT3,	0 },
+{"gsdaui",		"t,s,u",	0x74000000, 0xfc000000,	WR_1|RD_2,		0,		0,		LEXT3,	0 },
 
 /* R5900 VU0 Macromode instructions. */
 {"vabs",		"+7+K,+6+K",	  0x4a0001fd, 0xfe0007ff,	CP,		VU0CH,		VU0,		0,	0 },
