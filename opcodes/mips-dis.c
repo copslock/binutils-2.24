@@ -791,6 +791,12 @@ parse_mips_dis_option (const char *option, unsigned int len)
       return;
     }
 
+  if (CONST_STRNEQ (option, "loongson-csr"))
+    {
+      mips_ase |= ASE_LOONGSON_CSR;
+      return;
+    }
+
   /* Look for the = that delimits the end of the option name.  */
   for (i = 0; i < len; i++)
     if (option[i] == '=')
@@ -2158,6 +2164,9 @@ with the -M switch (multiple options should be separated by commas):\n"));
 
   fprintf (stream, _("\n\
   loongson-amo            Recognize the Loongson Atomic Memory Operation (AMO) ASE instructions.\n"));
+
+  fprintf (stream, _("\n\
+  loongson-csr            Recognize the Loongson Ctrl Status Register (CSR) ASE instructions.\n"));
 
   fprintf (stream, _("\n\
   gpr-names=ABI            Print GPR names according to  specified ABI.\n\
