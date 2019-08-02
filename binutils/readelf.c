@@ -12570,7 +12570,12 @@ process_mips_specific (FILE * file)
       /* Find the section header so that we get the size.  */
       while (sect->sh_type != SHT_MIPS_OPTIONS)
 	++sect;
-
+      /* PR 24243  */
+      if (sect->sh_size < sizeof (* eopt))
+       {
+         error (_("The MIPS options section is too small.\n"));
+         return FALSE;
+       }
       eopt = (Elf_External_Options *) get_data (NULL, file, options_offset, 1,
                                                 sect->sh_size, _("options"));
       if (eopt)
