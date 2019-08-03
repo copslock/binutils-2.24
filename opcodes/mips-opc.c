@@ -513,7 +513,7 @@ const struct mips_opcode mips_builtin_opcodes[] =
 {"gsdmulth",		"d,s,t",	0x70000018, 0xfc0007ff,	WR_1|RD_2|RD_3,		0,		0,		LEXT3,	0 },
 {"gsdmulthu",		"d,s,t",	0x70000019, 0xfc0007ff,	WR_1|RD_2|RD_3,		0,		0,		LEXT3,	0 },
 {"gsldpc",		"d",		0x7000002b, 0xffff07ff,	WR_1|LDD,		0,		0,		LEXT3,	0 },
-{"gsdaui",		"t,s,u",	0x74000000, 0xfc000000,	WR_1|RD_2,		0,		0,		LEXT3,	0 },
+{"gsdaui",		"t,s,u",	0x3c000000, 0xfc000000,	WR_1|RD_2,		0,		0,		LEXT3,	0 },
 
 /* Loongson spw */
 {"lddir",		"t,s,h",	0xc8000098, 0xfc0007ff,	WR_1|RD_2|RD_3|LDD,	0,		0,		LEXT,	0 },
