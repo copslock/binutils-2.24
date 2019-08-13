@@ -9699,6 +9699,19 @@ macro (struct mips_cl_insn *ip, char *str)
 	    micromips_label_expr (&label_expr);
 	  else
 	    label_expr.X_add_number = 8;
+
+	  if (mips_relax.sequence != 2)
+	    {
+	      unsigned long pinfo;
+	      pinfo = history->insn_mo->pinfo;
+	      if (!hilo_interlocks)
+		  if ((pinfo & INSN_READ_LO) || (pinfo & INSN_READ_HI))
+		    {
+		      add_fixed_insn (NOP_INSN);
+		      insert_into_history (0, 1, NOP_INSN);
+		    }
+	    }
+
 	  macro_build (&label_expr, "bne", "s,t,p", op[2], ZERO);
 	  macro_build (NULL, dbl ? "ddiv" : "div", "z,s,t", op[1], op[2]);
 	  macro_build (NULL, "break", BRK_FMT, 7);
@@ -9850,6 +9863,19 @@ macro (struct mips_cl_insn *ip, char *str)
 	    micromips_label_expr (&label_expr);
 	  else
 	    label_expr.X_add_number = 8;
+
+	  if (mips_relax.sequence != 2)
+	    {
+	      unsigned long pinfo;
+	      pinfo = history->insn_mo->pinfo;
+	      if (!hilo_interlocks)
+		if ((pinfo & INSN_READ_LO) || (pinfo & INSN_READ_HI))
+		  {
+		    add_fixed_insn (NOP_INSN);
+		    insert_into_history (0, 1, NOP_INSN);
+		  }
+	    }
+
 	  macro_build (&label_expr, "bne", "s,t,p", op[2], ZERO);
 	  macro_build (NULL, s, "z,s,t", op[1], op[2]);
 
